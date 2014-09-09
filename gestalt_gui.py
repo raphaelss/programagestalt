@@ -10,9 +10,9 @@ def gerar(quantidade_string):
     except ValueError:
         return
     arquivo = filedialog.asksaveasfilename(defaultextension='.ly', filetypes=[("Lilypond", "*.ly"), ("All files", "*")])
-    if arquivo == "" :
+    if arquivo == "":
         return
-    gestalt.gerar(quantidade, arquivo, randomicos.AlturaAleatorio(), randomicos.DuracaoAleatorio())
+    gestalt.gerar(arquivo, randomicos.AlturaAleatorio().gerar_altura(quantidade), randomicos.DuracaoAleatorio().gerar_duracao(quantidade))
 
 root = Tk()
 root.title("Gestalt")

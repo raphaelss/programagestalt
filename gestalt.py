@@ -1,9 +1,11 @@
 from lilypond import gerar_lilypond
 import randomicos
 import sys
+import os.path
+import arquivo
 
-altura_minima = 24
-altura_maxima = 48
+altura_minima = 48
+altura_maxima = 60
 duracoes_possiveis = [10,12,15,20,24,30,40,45,48,60,75,80,90,105,120,135,150,165,180,195,210,225,240]
 
 class Nivel:
@@ -100,9 +102,7 @@ def novo_nivel(anterior):
     duracoes.append(sum(anterior.duracao[inicio:len(anterior.duracao)]))
     return Nivel(alturas, duracoes, picos_valor)
 
-def gerar(quantidade, arquivo, gerador_altura, gerador_duracao):
-    alturas = gerador_altura.gerar_altura(quantidade)
-    duracoes = gerador_duracao.gerar_duracao(quantidade)
+def gerar(arquivo, alturas, duracoes):
     elemento = Nivel(alturas, duracoes)
     clang = novo_nivel(elemento)
     sequencia = novo_nivel(clang)
@@ -112,6 +112,13 @@ def gerar(quantidade, arquivo, gerador_altura, gerador_duracao):
     gerar_lilypond(arquivo, eventos)
 
 if __name__ == '__main__':
-    quant = int(sys.argv[1])
-    arquivo = sys.argv[2]
-    gerar(quant, arquivo, randomicos.AlturaAleatorio(), randomicos.DuracaoAleatorio())
+    if os.path.isfile(sys.argv[1]):
+        arq = arquivo.Arquivo(sys.argv[1])
+        alturas = arq.gerar_altura()
+        duracoes = arq.gerar_duracao()
+    else:
+        quant = int(sys.argv[1])
+        alturas = randomicos.AlturaAleatorio().gerar_altura(quant)
+        duracoes = randomicos.DuracaoAleatorio().gerar_duracao(quant)
+    arquivo_saida = sys.argv[2]
+    gerar(arquivo_saida, alturas, duracoes)

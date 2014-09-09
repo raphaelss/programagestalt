@@ -45,7 +45,7 @@ def altura_to_pc(x):
     return x % 12
 
 def altura_to_oct(x):
-    return x // 12 - 1 +3 #+3 temporario
+    return x // 12 - 1 #+3 #+3 temporario
 
 def oitava_lilypond(n):
     result = ""
