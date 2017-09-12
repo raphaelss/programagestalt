@@ -68,16 +68,11 @@ def altura_lilypond(pitch_class, oitava):
     #    clef = '"treble^15"'
     return '\\clef {0} {1}{2}'.format(clef, pitch_names[pitch_class],oitava_lilypond(oitava))
 
-def gerar_markup(evento):
+def gerar_markup(evento, niveis_spec):
     markup = ""
-    if evento.clang:
-        markup += "c" + str(evento.clang)
-    if evento.sequencia:
-        markup += "q" + str(evento.sequencia)
-    if evento.segmento:
-        markup += "g" + str(evento.segmento)
-    if evento.secao:
-        markup += "s" + str(evento.secao)
+    for i in range(len(evento.niveis)):
+        if evento.niveis[i]:
+            markup += niveis_spec[i] + str(evento.niveis[i])
     if markup:
         markup = "^\\markup{{{0}}}".format(markup)
     return markup
@@ -118,7 +113,7 @@ class Quialtera:
                 cor.append("")
         return duracoes_string[self.duracao].format(*alturas, mp=self.markup, cor=cor)
 
-def processar_eventos(eventos):
+def processar_eventos(eventos, niveis_spec):
     lily_lista = []
     i = 0
     while i < len(eventos):
@@ -130,16 +125,16 @@ def processar_eventos(eventos):
             markup_list = []
             while i < n:
                 alturas_quialtera.append(eventos[i].altura)
-                markup_list.append(gerar_markup(eventos[i]))
+                markup_list.append(gerar_markup(eventos[i], niveis_spec))
                 i += 1
             lily_lista.append(Quialtera(alturas_quialtera, dur, markup_list))
         else:
-            lily_lista.append(Nota(alt,dur,gerar_markup(eventos[i])))
+            lily_lista.append(Nota(alt,dur,gerar_markup(eventos[i], niveis_spec)))
             i += 1
     return lily_lista
 
-def gerar_lilypond(arquivo, eventos):
-    notas = processar_eventos(eventos)
+def gerar_lilypond(arquivo, eventos, niveis_spec):
+    notas = processar_eventos(eventos, niveis_spec)
     with open(arquivo, mode='w', encoding='UTF-8') as output:
         output.write("\\new Voice {\n\\override Staff.TimeSignature #'stencil = ##f\n\\cadenzaOn\n")
         last = len(notas)-1

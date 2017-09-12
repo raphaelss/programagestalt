@@ -5,6 +5,14 @@ import randomicos
 import gestalt
 
 def gerar(quantidade_string):
+    if quantidade_string == "":
+        input_arquivo = filedialog.askopenfilename(filetypes=[("All files", "*")])
+        if input_arquivo == "":
+            return
+        output_arquivo = filedialog.asksaveasfilename(defaultextension='.ly', filetypes=[("Lilypond", "*.ly"), ("All files", "*")])
+        if output_arquivo == "":
+            return
+        gestalt.gerar_arquivo(input_arquivo, output_arquivo)
     try:
         quantidade = int(quantidade_string)
     except ValueError:
