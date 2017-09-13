@@ -1,3 +1,4 @@
+import csv
 import re
 
 class Arquivo:
@@ -22,3 +23,28 @@ class Arquivo:
 
     def gerar_duracao(self):
         return self.duracoes
+
+class Csv:
+    def __init__(self, path):
+        self.alturas = []
+        self.duracoes = []
+        with open(path) as f:
+            first = True
+            for row in csv.reader(f, delimiter=','):
+                if first:
+                    first = False
+                    continue
+                self.alturas.append(int(row[3]))
+                self.duracoes.append(round(float(row[1]) * 60))
+
+    def gerar_altura(self):
+        return self.alturas
+
+    def gerar_duracao(self):
+        return self.duracoes
+
+def abrir(path):
+    if path.endswith('csv'):
+        return Csv(path)
+    else:
+        return Arquivo(path)

@@ -7,7 +7,7 @@ import arquivo
 altura_minima = 48
 altura_maxima = 60
 duracoes_possiveis = [10,12,15,20,24,30,40,45,48,60,75,80,90,105,120,135,150,165,180,195,210,225,240]
-niveis_default = "cqogs"
+niveis_default = "cqgs"
 
 class Nivel:
     def __init__(self, alturas, duracoes, picos_anterior = False):
@@ -40,18 +40,22 @@ class Evento:
         self.duracao = duracao
         self.niveis = [False] * nr_niveis
 
+    def __repr__(self):
+        return "\nAltura = {0}\nDuração = {1}\nNíveis = {2}".format(self.altura,
+                                                                  self.duracao,
+                                                                  self.niveis)
+
 def calcular_eventos(alturas, duracoes, niveis):
     eventos = []
     cur = 0
     i_cur_niveis = [(0, 0)] * len(niveis)
-    ev = Evento(alturas[0], duracoes[0], len(niveis))
     for i in range(len(alturas)):
         ev = Evento(alturas[i], duracoes[i], len(niveis))
         for j in range(len(niveis)):
             i_nivel, cur_nivel = i_cur_niveis[j]
             if cur == cur_nivel:
-                ev.niveis[i_nivel] += 1
-                niveis[j] = (i_nivel + 1, niveis[j].duracao[i_nivel])
+                ev.niveis[j] = i_nivel + 1
+                i_cur_niveis[j] = (i_nivel + 1, cur_nivel + niveis[j].duracao[i_nivel])
         eventos.append(ev)
         cur = cur + ev.duracao
     return eventos
@@ -83,14 +87,14 @@ def novo_nivel(anterior):
     return Nivel(alturas, duracoes, picos_valor)
 
 def gerar(arquivo, alturas, duracoes, niveis_spec = niveis_default):
-    niveis = [Nivel(alturas, duracoes)]
-    for i in range(len(niveis)):
-        niveis.append(novo_nivel(niveis[0]))
+    niveis = [novo_nivel(Nivel(alturas, duracoes))]
+    for i in range(len(niveis_spec) - 1):
+        niveis.append(novo_nivel(niveis[i]))
     eventos = calcular_eventos(alturas, duracoes, niveis)
     gerar_lilypond(arquivo, eventos, niveis_spec)
 
 def gerar_arquivo(arquivo_input, arquivo_output):
-    arq = arquivo.Arquivo(arquivo_input)
+    arq = arquivo.abrir(arquivo_input)
     alturas = arq.gerar_altura()
     duracoes = arq.gerar_duracao()
     gerar(arquivo_output, alturas, duracoes)
