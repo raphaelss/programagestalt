@@ -35,8 +35,6 @@ duracoes_string = {10:"\\times 4/6 {{ {cor[0]}{0}16[{mp[0]} {cor[1]}{1}16{mp[1]}
                    225:"{cor}{0}2.~{mp} {0}8.",
                    240:"{cor}{0}1{mp}"}
 
-quialteras = [10, 12, 20, 24, 40, 48, 80]
-
 quialteras_n = {10:6, 12:5, 20:3, 24:5, 40:3, 48:5, 80:3}
 
 red = "\\once \\override NoteHead #'color = #red "
@@ -119,7 +117,7 @@ def processar_eventos(eventos, niveis_spec):
     while i < len(eventos):
         alt = eventos[i].altura
         dur = eventos[i].duracao
-        if dur in quialteras:
+        if dur in quialteras_n:
             n = quialteras_n[dur]+i
             alturas_quialtera = []
             markup_list = []

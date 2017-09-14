@@ -86,25 +86,18 @@ def novo_nivel(anterior):
     duracoes.append(sum(anterior.duracao[inicio:len(anterior.duracao)]))
     return Nivel(alturas, duracoes, picos_valor)
 
-def gerar(arquivo, alturas, duracoes, niveis_spec = niveis_default):
+def gerar(arquivo, obj, niveis_spec = niveis_default):
+    alturas = obj.gerar_altura()
+    duracoes = obj.gerar_duracao()
     niveis = [novo_nivel(Nivel(alturas, duracoes))]
     for i in range(len(niveis_spec) - 1):
         niveis.append(novo_nivel(niveis[i]))
     eventos = calcular_eventos(alturas, duracoes, niveis)
     gerar_lilypond(arquivo, eventos, niveis_spec)
 
-def gerar_arquivo(arquivo_input, arquivo_output):
-    arq = arquivo.abrir(arquivo_input)
-    alturas = arq.gerar_altura()
-    duracoes = arq.gerar_duracao()
-    gerar(arquivo_output, alturas, duracoes)
-
 if __name__ == '__main__':
     if os.path.isfile(sys.argv[1]):
-        gerar_arquivo(sys.argv[1], sys.argv[2])
+        obj = arquivo.abrir(sys.argv[1])
     else:
-        quant = int(sys.argv[1])
-        alturas = randomicos.AlturaAleatorio().gerar_altura(quant)
-        duracoes = randomicos.DuracaoAleatorio().gerar_duracao(quant)
-        arquivo_saida = sys.argv[2]
-        gerar(arquivo_saida, alturas, duracoes)
+        obj = randomicos.Aleatorio(int(sys.argv[1]))
+    gerar(sys.argv[2], obj)

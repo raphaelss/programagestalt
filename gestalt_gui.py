@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
+import arquivo
 import randomicos
 import gestalt
 
@@ -9,18 +10,16 @@ def gerar(quantidade_string):
         input_arquivo = filedialog.askopenfilename(filetypes=[("All files", "*")])
         if input_arquivo == "":
             return
-        output_arquivo = filedialog.asksaveasfilename(defaultextension='.ly', filetypes=[("Lilypond", "*.ly"), ("All files", "*")])
-        if output_arquivo == "":
+        obj = arquivo.abrir(input_arquivo)
+    else:
+        try:
+            obj = randomicos.Aleatorio(int(quantidade_string))
+        except ValueError:
             return
-        gestalt.gerar_arquivo(input_arquivo, output_arquivo)
-    try:
-        quantidade = int(quantidade_string)
-    except ValueError:
+    arquivo_output = filedialog.asksaveasfilename(defaultextension='.ly', filetypes=[("Lilypond", "*.ly"), ("All files", "*")])
+    if arquivo_output == "":
         return
-    arquivo = filedialog.asksaveasfilename(defaultextension='.ly', filetypes=[("Lilypond", "*.ly"), ("All files", "*")])
-    if arquivo == "":
-        return
-    gestalt.gerar(arquivo, randomicos.AlturaAleatorio().gerar_altura(quantidade), randomicos.DuracaoAleatorio().gerar_duracao(quantidade))
+    gestalt.gerar(arquivo_output, obj)
 
 root = Tk()
 root.title("Gestalt")
